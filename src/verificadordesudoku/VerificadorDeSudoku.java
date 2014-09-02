@@ -10,25 +10,11 @@ public class VerificadorDeSudoku {
     public static void main(String[] args) {
         int[][] matrizJogo = new int[9][9];
         boolean[][] matrizErros = new boolean[9][9];
+        String jogoFormatado = "<html>";
         
         matrizJogo = carregarArquivo();
         matrizErros = verificarJogo(matrizJogo);
-        /*Debbuging!!!
-        for (int lin = 0; lin < 9; lin++) {
-            for (int col = 0; col < 9; col++) {
-                System.out.printf(" " + matrizJogo[lin][col] + " ");
-            }
-            System.out.printf("\n");
-        }
-        
-        System.out.printf("\n\n\n");
-        
-        for (int lin = 0; lin < 9; lin++) {
-            for (int col = 0; col < 9; col++) {
-                System.out.printf(" " + matrizErros[lin][col] + " ");
-            }
-            System.out.printf("\n");
-        }*/
+        mostrarMatriz(matrizJogo, matrizErros);
     }
 
     /**
@@ -145,5 +131,28 @@ public class VerificadorDeSudoku {
             }
         }
         return erroNaPosicao;
+    }
+    
+    /**
+     * Imprime a matriz que representa o jogo de sudoku com seus erros 
+     * representados na cor vermelha
+     * Quando há "true" na matrizErros, a posição correspondente na matrizJogo
+     * é pintada de vermelho, caso contrário é pintada de azul
+     * 
+     * @param matrizJogo
+     * @param matrizErros 
+     */
+    public static void mostrarMatriz(int[][] matrizJogo, boolean[][] matrizErros){
+        //Código provisório, alterar na eventual implementação de uma interface 
+        
+        String jogoFormatado = "";
+        
+        for (int lin = 0; lin < 9; lin++) {
+            jogoFormatado += "\n<html>";
+            for (int col = 0; col < 9; col++) {
+                jogoFormatado += " <font color=#" + ((matrizErros[lin][col])?"EB1010>":"0E32C4>") + matrizJogo[lin][col] + "</font>  ";
+            }
+        }
+        JOptionPane.showMessageDialog(null, jogoFormatado, "FIM DO PROGRAMA", 0);   
     }
 }
