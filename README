@@ -1,1 +1,12 @@
 Projeto prático final de PI do 2º quadrimestre de 2014 (UFABC)
+
+O que funciona:
+* Carrega jogo a partir de um arquivo .txt
+* Verifica se o jogo está ou não correto
+* Imprime o jogo para o usuário e mostra os erros cometidos
+
+TODO:
+
+* Melhorar função de verificação de repetições
+* Implementar a possibilidade de adicionar uma matriz manualmente digitando-a ou adicionando um txt caso o programa não a encontre
+* Implementar interface gráfica
