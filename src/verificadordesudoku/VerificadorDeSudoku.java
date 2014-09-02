@@ -10,7 +10,6 @@ public class VerificadorDeSudoku {
     public static void main(String[] args) {
         int[][] matrizJogo = new int[9][9];
         boolean[][] matrizErros = new boolean[9][9];
-        String jogoFormatado = "<html>";
         
         matrizJogo = carregarArquivo();
         matrizErros = verificarJogo(matrizJogo);
