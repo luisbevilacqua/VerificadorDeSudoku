@@ -10,9 +10,25 @@ public class VerificadorDeSudoku {
     public static void main(String[] args) {
         int[][] matrizJogo = new int[9][9];
         boolean[][] matrizErros = new boolean[9][9];
-        
+
+        for (int col = 0; col < 9; col++) {
+            for (int lin = 0; lin < 9; lin++) {
+                matrizErros[lin][col] = false;
+            }
+        }
+
         matrizJogo = carregarArquivo();
-        matrizErros = verificarJogo(matrizJogo);
+        
+        for (int x = 0; x < 9; x++) {
+            matrizErros = mesclarMatrizes(matrizErros, verificarJogo(matrizJogo, x));
+        }
+        
+        for (int col = 0; col < 9; col = col + 3) {
+            for (int lin = 0; lin < 9; lin = lin + 3) {
+                matrizErros = mesclarMatrizes(matrizErros, verificarJogo(matrizJogo, col, lin));
+            }
+        }
+        
         mostrarMatriz(matrizJogo, matrizErros);
     }
 
@@ -28,11 +44,11 @@ public class VerificadorDeSudoku {
     public static int[][] carregarArquivo() {
         boolean matrizCompleta = true;
         int[][] matrizJogo = new int[9][9];
-        
+
         try {
             File arquivo = new File("respostaSudoku.txt");
             Scanner sc = new Scanner(arquivo);
-            
+
             for (int lin = 0; lin < 9; lin++) {
                 if (!matrizCompleta) {
                     break;
@@ -50,80 +66,74 @@ public class VerificadorDeSudoku {
                 JOptionPane.showMessageDialog(null, "O jogo de Sudoku esta "
                         + "incompleto");
             }
-        } 
-        catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             JOptionPane.showMessageDialog(null, "Coloque um arquivo com o nome "
                     + "\"respostaSudoku.txt\"");
-            
-            /*Impementação:
-            *
-            * Pedir para o usuário digitar uma matriz ou inserir um
-            * arquivo txt contendo uma
-            */
+
+            /* TODO
+             * Impementação:
+             *
+             * Pedir para o usuário digitar uma matriz ou inserir um
+             * arquivo txt contendo uma
+             */
         }
         return matrizJogo;
     }
-    
+
     /**
      * Verifica se há repetições de números ao longo das colunas, linhas ou
      * blocos de uma matriz 9x9, retorna uma matriz de tamanho correspondente
      * com "true" onde há erros e "false" onde não há
      *
      * @param jogo {Array tipo int[9][9]}
-     * @example erros = verificarJogo(sudoku)
+     * @param x
      * 
+     * @example erros = verificarJogo(sudoku)
+     *
      * @return erroNaPosicao {Array tipo boolean[9][9]}
      *
      */
-    public static boolean[][] verificarJogo(int jogo[][]){
+    public static boolean[][] verificarJogo(int jogo[][], int x) {
         //A função funciona mas precisa ser otimizada
         boolean[][] erroNaPosicao = new boolean[9][9];
-        
-        for(int col = 0; col < 9; col++){
-            for(int lin = 0; lin < 9; lin++){
-                erroNaPosicao[lin][col]=false;
+
+        for (int col = 0; col < 9; col++) {
+            for (int lin = 0; lin < 9; lin++) {
+                erroNaPosicao[lin][col] = false;
             }
         }
-        
-        //Verifica as repetições nas linhas
-        for(int col = 0; col < 9; col++){
-            for(int linA = 0; linA < 9; linA++){
-                for(int linB = (linA+1); linB < 9; linB++){
-                    if(jogo[linA][col]==jogo[linB][col])
-                    {
-                        erroNaPosicao[linA][col]=true;
-                        erroNaPosicao[linB][col]=true;
-                    }
+
+        for (int y = 0; y < 9; y++) {
+            for (int z = (y + 1); z < 9; z++) {
+                if (jogo[x][y] == jogo[x][z]) {
+                    erroNaPosicao[x][y] = true;
+                    erroNaPosicao[x][z] = true;
+                }
+                if (jogo[y][x] == jogo[z][x]) {
+                    erroNaPosicao[y][x] = true;
+                    erroNaPosicao[z][x] = true;
                 }
             }
         }
-        
-        //Verifica as repetições nas linhas
-        for(int lin = 0; lin < 9; lin++){
-            for(int colA = 0; colA < 9; colA++){
-                for(int colB = (colA+1); colB < 9; colB++){
-                    if(jogo[lin][colA]==jogo[lin][colB])
-                    {
-                        erroNaPosicao[lin][colA]=true;
-                        erroNaPosicao[lin][colB]=true;
-                    }
-                }
+
+        return erroNaPosicao;
+    }
+
+    public static boolean[][] verificarJogo(int jogo[][], int linhaInicial, int colunaInicial) {
+        boolean[][] erroNaPosicao = new boolean[9][9];
+
+        for (int col = 0; col < 9; col++) {
+            for (int lin = 0; lin < 9; lin++) {
+                erroNaPosicao[lin][col] = false;
             }
         }
-        
-        //Verifica as repetições nos blocos
-        for(int col = 0; col < 9; col=col+3){
-            for(int lin = 0; lin < 9; lin=lin+3){
-                for(int linA = lin; linA < (lin+3); linA++){
-                    for(int colA = col; colA < (col+3); colA++){
-                        for(int linB = lin; linB < (lin+3); linB++){
-                            for(int colB = col; colB < (col+3); colB++){
-                                if(jogo[colA][linA]==jogo[colB][linB]&&!(linA==linB&&colA==colB))
-                                {
-                                    erroNaPosicao[linA][colA]=true;
-                                    erroNaPosicao[linB][colB]=true;
-                                }
-                            }
+        for (int linA = linhaInicial; linA < (linhaInicial + 3); linA++) {
+            for (int colA = colunaInicial; colA < (colunaInicial + 3); colA++) {
+                for (int linB = linhaInicial; linB < (linhaInicial + 3); linB++) {
+                    for (int colB = colunaInicial; colB < (colunaInicial + 3); colB++) {
+                        if (jogo[colA][linA] == jogo[colB][linB] && !(linA == linB && colA == colB)) {
+                            erroNaPosicao[colA][linA] = true;
+                            erroNaPosicao[colB][linB] = true;
                         }
                     }
                 }
@@ -131,27 +141,71 @@ public class VerificadorDeSudoku {
         }
         return erroNaPosicao;
     }
-    
+
     /**
-     * Imprime a matriz que representa o jogo de sudoku com seus erros 
-     * representados na cor vermelha
-     * Quando há "true" na matrizErros, a posição correspondente na matrizJogo
-     * é pintada de vermelho, caso contrário é pintada de azul
-     * 
+     * Imprime a matriz que representa o jogo de sudoku com seus erros
+     * representados na cor vermelha Quando há "true" na matrizErros, a posição
+     * correspondente na matrizJogo é pintada de vermelho, caso contrário é
+     * pintada de azul
+     *
      * @param matrizJogo
-     * @param matrizErros 
+     * @param matrizErros
      */
-    public static void mostrarMatriz(int[][] matrizJogo, boolean[][] matrizErros){
+    public static void mostrarMatriz(int[][] matrizJogo, boolean[][] matrizErros) {
         //Código provisório, alterar na eventual implementação de uma interface 
-        
-        String jogoFormatado = "";
+
+        String jogoFormatado = "<html>";
+            
+        jogoFormatado += "┌";
+        for(int x = 0; x < 8; x++){
+            jogoFormatado += "  &nbsp;&nbsp;&nbsp;┬";
+        }
+        jogoFormatado += " &nbsp;&nbsp;&nbsp;┐<br>";
         
         for (int lin = 0; lin < 9; lin++) {
-            jogoFormatado += "\n<html>";
             for (int col = 0; col < 9; col++) {
-                jogoFormatado += " <font color=#" + ((matrizErros[lin][col])?"EB1010>":"0E32C4>") + matrizJogo[lin][col] + "</font>  ";
+                jogoFormatado += "│";
+                jogoFormatado += " <font color=#" + ((matrizErros[lin][col]) ? "EB1010>" : "0E32C4>") + matrizJogo[lin][col] + "</font>  ";
+            }
+            if(lin!=8){
+                jogoFormatado += "│";
+                jogoFormatado += "<br>";
+                jogoFormatado += "├";
+                for(int x = 0; x < 8; x++){
+                    jogoFormatado += "  &nbsp;&nbsp;&nbsp;┼";    
+                }
+                jogoFormatado += " &nbsp;&nbsp;&nbsp;┤<br>";
             }
         }
-        JOptionPane.showMessageDialog(null, jogoFormatado, "FIM DO PROGRAMA", 0);   
+        
+        jogoFormatado += "│<br>└";
+        for(int x = 0; x < 8; x++){
+            jogoFormatado += " &nbsp;&nbsp;&nbsp;┴";
+        }
+        jogoFormatado += " &nbsp;&nbsp;&nbsp;┘";
+
+        jogoFormatado += "</html>";
+        JOptionPane.showMessageDialog(null, jogoFormatado, "FIM DO PROGRAMA", 0);
+    }
+
+    /**
+     * Mescla duas matrizes booleanas usando lógica OU entre todos seus
+     * componentes
+     *
+     * @param matrizA {boolean 9x9}
+     * @param matrizB {boolean 9x9}
+     *
+     * @return matrizMesclada {boolean 9x9}
+     */
+    public static boolean[][] mesclarMatrizes(boolean[][] matrizA, boolean[][] matrizB) {
+        boolean[][] matrizMesclada = new boolean[9][9];
+
+        for (int lin = 0; lin < 9; lin++) {
+            for (int col = 0; col < 9; col++) {
+                matrizMesclada[lin][col] = matrizA[lin][col] || matrizB[lin][col];
+            }
+        }
+
+        return matrizMesclada;
     }
 }
